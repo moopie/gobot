@@ -72,7 +72,4 @@ func fakeHttp() {
         fmt.Fprintln(res, "Hello, $user!")
     })
     err := http.ListenAndServe(":5000", nil)
-    if err != nil {
-        panic(err)
-    }
 }

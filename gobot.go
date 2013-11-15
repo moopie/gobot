@@ -71,5 +71,5 @@ func fakeHttp() {
     http.HandleFunc("/", func(res http.ResponseWriter, req *http.Request) {
         fmt.Fprintln(res, "Hello, $user!")
     })
-    err := http.ListenAndServe(":5000", nil)
+    http.ListenAndServe(":5000", nil)
 }

@@ -35,7 +35,7 @@ func Start() {
     for {
         select {
         case msg := <-listen:
-            msglc = strings.ToLower(msg)
+            msglc := strings.ToLower(msg.Message)
             if strings.Contains(msglc, "i love you") {
                 respond <- *message.Response(msg.Channel, getMood())
             }

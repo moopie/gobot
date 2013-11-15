@@ -43,6 +43,7 @@ func main() {
     pms.Register(listener, responder)
 
     go hello.Start()
+    go pms.Start()
 
     // No port yet, TODO: find out how to append an int to a string (yes, really)
     if err := connection.Connect(*server); err != nil {

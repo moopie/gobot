@@ -29,7 +29,9 @@ func main() {
     flag.Parse()
     // Hack to make the bot stay alive on heroku
     // http://mmcgrana.github.io/2012/09/getting-started-with-go-on-heroku.html
+    fmt.Println("Listening...")
     go fakeHttp()
+    fmt.Println("Continuing with the rest of app")
     // Create connection stuff
     connection := irc.SimpleClient(*nick, *user, *name)
     connection.AddHandler(irc.CONNECTED, connect) // Join channels when you connect

@@ -6,7 +6,7 @@ import (
     "flag"
     "strings"
     "fmt"
-    // "net/http"
+    "net/http"
     // modules
     "github.com/moopie/gobot/modules/hello"
     "github.com/moopie/gobot/modules/pms"
@@ -68,11 +68,10 @@ func recieve(conn *irc.Conn, line *irc.Line) {
 
     fmt.Println("[", line.Args[0], "]", line.Nick, ":", line.Args[1])
 }
-/*
+
 func fakeHttp() {
     http.HandleFunc("/", func(res http.ResponseWriter, req *http.Request) {
         fmt.Fprintln(res, "Hello, $user!")
     })
     http.ListenAndServe(":80", nil)
 }
-*/

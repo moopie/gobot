@@ -6,6 +6,7 @@ import (
     "flag"
     "strings"
     "fmt"
+    "os"
     "net/http"
     // modules
     "github.com/moopie/gobot/modules/hello"
@@ -73,17 +74,9 @@ func recieve(conn *irc.Conn, line *irc.Line) {
 
 // Said heroku hack in action
 // makes heroku think we are running web app
-type httpHandler struct {}
-
-func (h httpHandler) ServeHTTP(
-    w http.ResponseWriter,
-    r *http.Request) {
-        fmt.Println(w, "Hello, $user!")
-}
-
 func fakeHttp() {
-    // http.HandleFunc("/", func(res http.ResponseWriter, req *http.Request) {
-    //     fmt.Fprintln(res, "Hello, $user!")
-    // })
-    http.ListenAndServe(":5000", httpHandler{})
+    http.HandleFunc("/", func(res http.ResponseWriter, req *http.Request) {
+        fmt.Fprintln(res, "Hello, $user!")
+    })
+    http.ListenAndServe(":"+os.Getenv("PORT"), nil)
 }

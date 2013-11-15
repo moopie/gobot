@@ -28,12 +28,7 @@ func main() {
     flag.Parse()
     // Hack to make the bot stay alive on heroku
     // http://mmcgrana.github.io/2012/09/getting-started-with-go-on-heroku.html
-    http.HandleFunc("/", httpHello)
-    err := http.ListenAndServe(":5000", nil)
-    if err != nil {
-        panic(err)
-    }
-
+    go fakeHttp()
     // Create connection stuff
     connection := irc.SimpleClient(*nick, *user, *name)
     connection.AddHandler(irc.CONNECTED, connect) // Join channels when you connect
@@ -72,6 +67,12 @@ func recieve(conn *irc.Conn, line *irc.Line) {
     fmt.Println("[", line.Args[0], "]", line.Nick, ":", line.Args[1])
 }
 
-func httpHello(res http.ResponseWriter, req *http.Request) {
-    fmt.Fprintln(res, "Hello, $user!")
+func fakeHttp() {
+    http.HandleFunc("/", func(res http.ResponseWriter, req *http.Request) {
+        fmt.Fprintln(res, "Hello, $user!")
+    })
+    err := http.ListenAndServe(":5000", nil)
+    if err != nil {
+        panic(err)
+    }
 }

@@ -9,6 +9,7 @@ import (
     "net/http"
     // modules
     "github.com/moopie/gobot/modules/hello"
+    "github.com/moopie/gobot/modules/pms"
 )
 
 var (
@@ -36,6 +37,7 @@ func main() {
     quit := make(chan bool)
     connection.AddHandler(irc.DISCONNECTED, func (conn *irc.Conn, line *irc.Line) {quit <- true})
     hello.Register(listener, responder)
+    pms.Register(listener, responder)
 
     go hello.Start()
 
@@ -71,5 +73,5 @@ func fakeHttp() {
     http.HandleFunc("/", func(res http.ResponseWriter, req *http.Request) {
         fmt.Fprintln(res, "Hello, $user!")
     })
-    http.ListenAndServe(":5000", nil)
+    http.ListenAndServe(":80", nil)
 }

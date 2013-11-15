@@ -6,7 +6,7 @@ import (
     "flag"
     "strings"
     "fmt"
-    "net/http"
+    // "net/http"
     // modules
     "github.com/moopie/gobot/modules/hello"
     "github.com/moopie/gobot/modules/pms"

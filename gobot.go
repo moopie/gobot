@@ -40,11 +40,15 @@ func main() {
     connection.AddHandler("PRIVMSG", recieve) // Do stuff when you recieve a PRIVMSG
     quit := make(chan bool)
     connection.AddHandler(irc.DISCONNECTED, func (conn *irc.Conn, line *irc.Line) {quit <- true})
+
+
     hello.Register(listener, responder)
     pms.Register(listener, responder)
+    razwork.Register(listener, responder)
 
     go hello.Start()
     go pms.Start()
+    go razwork.Start()
 
     // No port yet, TODO: find out how to append an int to a string (yes, really)
     if err := connection.Connect(*server); err != nil {

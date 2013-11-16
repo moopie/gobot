@@ -1,4 +1,4 @@
-package pms
+package razwork
 
 import (
     "github.com/moopie/gobot/message"

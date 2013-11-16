@@ -22,8 +22,8 @@ var (
     pass = flag.String("pass", "", "Server password, not nickserv")
     chans = flag.String("channels", "#redditeu", "Join channels on connect")
     connection = new(irc.Conn)
-    listener = make(chan message.Message)
-    responder = make(chan message.Message)
+    listener = make(chan message.Message, 10)
+    responder = make(chan message.Message, 10)
 )
 
 func main() {
@@ -77,7 +77,10 @@ func recieve(conn *irc.Conn, line *irc.Line) {
 // makes heroku think we are running web app
 func fakeHttp() {
     http.HandleFunc("/", func(res http.ResponseWriter, req *http.Request) {
-        fmt.Fprintln(res, "Hello, $user!")
+        fmt.Fprintln(res, `<html><title>Gobot</title><body>Ping this place every 40-60 mins<br />
+            <a href=http://stackoverflow.com/questions/5480337/easy-way-to-prevent-heroku-idling>
+            http://stackoverflow.com/questions/5480337/easy-way-to-prevent-heroku-idling</a>
+            </body></html>`)
     })
     http.ListenAndServe(":"+os.Getenv("PORT"), nil)
 }

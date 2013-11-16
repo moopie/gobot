@@ -2,13 +2,32 @@ package grnaer
 
 import (
     "github.com/moopie/gobot/message"
-    "github.com/moopie/gobot/main"
-    "strings"
     "math/rand"
+    "strings"
     "time"
 )
 
-type Grnaer struct{}
+type Grnaer struct {
+    botNick string
+}
+
+func (p *Grnaer) Respond(msg *message.Message) *message.Message {
+    m := message.Empty()
+    msglc := strings.ToLower(msg.Message)
+    nicklc := strings.ToLower(msg.Sender)
+
+    if strings.Contains(nicklc, "garner") && strings.HasPrefix(msglc, p.botNick) {
+        s := "Archer wtf are you doing"
+        words := strings.Split(s, " ")[1:]
+        randwords := msg.Sender + ": "
+        for _, word := range words {
+            randwords += shuffle(word) + " "
+        }
+        m = message.Response(msg.Channel, randwords)
+    }
+
+    return m
+}
 
 func shuffle(s string) string {
     rand.Seed(time.Now().UnixNano())
@@ -19,20 +38,9 @@ func shuffle(s string) string {
     return string(t)
 }
 
-func (p *Grnaer) Respond(msg *message.Message) *message.Message {
-    m := message.Empty()
-    msglc := strings.ToLower(msg.Message)
-    nicklc := strings.ToLower(msg.Sender)
+func Create(nick string) *Grnaer {
+    g := new(Grnaer)
+    g.botNick = nick
 
-    if strings.Contains(nicklc, "garner") && strings.HasPrefix(msglc, main.Nick) {
-        s := "Archer wtf are you doing"
-        words := strings.Split(s, " ")[1:]
-        randwords := msg.Sender + ": "
-        for _,word := range words {
-            randwords += shuffle(word) + " "
-        }
-        m = randwords
-    }
-
-    return m
+    return g
 }

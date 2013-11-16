@@ -11,6 +11,7 @@ import (
     // modules
     "github.com/moopie/gobot/modules/hello"
     "github.com/moopie/gobot/modules/pms"
+    "github.com/moopie/gobot/modules/razwork"
 )
 
 var (

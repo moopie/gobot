@@ -34,3 +34,7 @@ func Response(channel, message string) *Message {
 
     return m
 }
+
+func Empty() *Message {
+    return new(Message)
+}

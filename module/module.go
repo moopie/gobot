@@ -5,5 +5,5 @@ import (
 )
 
 type Module interface {
-    Register(chan message.Message, chan message.Message)
+    Respond(msg *message.Message) *message.Message
 }

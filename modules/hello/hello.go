@@ -4,23 +4,14 @@ import (
     "github.com/moopie/gobot/message"
 )
 
-var (
-    listen  chan message.Message
-    respond chan message.Message
-)
+type Hello struct{}
 
-func Register(listener, responder chan message.Message) {
-    listen = listener
-    respond = responder
-}
+func (h *Hello) Respond(msg *message.Message) *message.Message {
+    m := message.Empty()
 
-func Start() {
-    for {
-        select {
-        case msg := <-listen:
-            if msg.Message == "!hello" {
-                respond <- *message.Response(msg.Channel, "Hi!")
-            }
-        }
+    if msg.Message == "!hello" {
+        m = message.Response(msg.Channel, "Hi!")
     }
+
+    return m
 }

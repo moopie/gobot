@@ -3,6 +3,7 @@ package main
 import (
     irc "github.com/fluffle/goirc/client"
     "github.com/moopie/gobot/message"
+    "github.com/moopie/gobot/module"
     "flag"
     "strings"
     "fmt"
@@ -23,8 +24,7 @@ var (
     pass = flag.String("pass", "", "Server password, not nickserv")
     chans = flag.String("channels", "#redditeu", "Join channels on connect")
     connection = new(irc.Conn)
-    listener = make(chan message.Message, 10)
-    responder = make(chan message.Message, 10)
+    subscribers = make([]module.Module, 0, 10)
 )
 
 func main() {
@@ -41,28 +41,20 @@ func main() {
     quit := make(chan bool)
     connection.AddHandler(irc.DISCONNECTED, func (conn *irc.Conn, line *irc.Line) {quit <- true})
 
-
-    hello.Register(listener, responder)
-    pms.Register(listener, responder)
-    razwork.Register(listener, responder)
-
-    go hello.Start()
-    go pms.Start()
-    go razwork.Start()
+    register(new(hello.Hello))
+    register(new(pms.Pms))
+    register(new(razwork.Razwork))
 
     // No port yet, TODO: find out how to append an int to a string (yes, really)
     if err := connection.Connect(*server); err != nil {
         fmt.Println("Connection error: %s", err.Error())
     }
 
-    for {
-        select {
-            case msg := <-responder:
-            connection.Privmsg(msg.Channel, msg.Message)
-        }
-    }
-
     <-quit
+}
+
+func register(mod module.Module) {
+    subscribers = append(subscribers, mod)
 }
 
 func connect(conn *irc.Conn, line *irc.Line) {
@@ -73,9 +65,20 @@ func connect(conn *irc.Conn, line *irc.Line) {
 }
 
 func recieve(conn *irc.Conn, line *irc.Line) {
-    listener <- *message.Line(line)
+    for _,mod := range(subscribers) {
+        msg := message.Line(line)
+        response := mod.Respond(msg)
+        if(response.Message != "") {
+            // When channel is nick, this means it was a private message
+            // so send the message to the sender instead
+            if (response.Channel == *nick) {
+                response.Channel = response.Sender
+            }
+            conn.Privmsg(response.Channel, response.Message)
+        }
+    }
 
-    fmt.Println("[", line.Args[0], "]", line.Nick, ":", line.Args[1])
+    fmt.Println("["+line.Args[0]+"]"+ line.Nick+":"+  line.Args[1])
 }
 
 // Said heroku hack in action
@@ -83,7 +86,7 @@ func recieve(conn *irc.Conn, line *irc.Line) {
 func fakeHttp() {
     http.HandleFunc("/", func(res http.ResponseWriter, req *http.Request) {
         fmt.Fprintln(res, `<html><title>Gobot</title><body>Ping this place every 40-60 mins<br />
-            <a href=http://stackoverflow.com/questions/5480337/easy-way-to-prevent-heroku-idling>
+            <a href="http://stackoverflow.com/questions/5480337/easy-way-to-prevent-heroku-idling">
             http://stackoverflow.com/questions/5480337/easy-way-to-prevent-heroku-idling</a>
             </body></html>`)
     })

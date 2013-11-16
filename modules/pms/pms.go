@@ -2,14 +2,22 @@ package pms
 
 import (
     "github.com/moopie/gobot/message"
-    "strings"
     "math/rand"
+    "strings"
 )
 
-var (
-    listen  chan message.Message
-    respond chan message.Message
-)
+type Pms struct{}
+
+func (p *Pms) Respond(msg *message.Message) *message.Message {
+    m := message.Empty()
+
+    lowered := strings.ToLower(msg.Message)
+    if strings.Contains(lowered, "i love you") {
+        m = message.Response(msg.Channel, getMood())
+    }
+
+    return m
+}
 
 func random() int {
     return rand.Intn(3)
@@ -23,22 +31,5 @@ func getMood() string {
         return "meh"
     } else {
         return "fuck off"
-    }
-}
-
-func Register(listener, responder chan message.Message) {
-    listen = listener
-    respond = responder
-}
-
-func Start() {
-    for {
-        select {
-        case msg := <-listen:
-            msglc := strings.ToLower(msg.Message)
-            if strings.Contains(msglc, "i love you") {
-                respond <- *message.Response(msg.Channel, getMood())
-            }
-        }
     }
 }

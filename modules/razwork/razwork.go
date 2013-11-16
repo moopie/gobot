@@ -5,29 +5,20 @@ import (
     "strings"
 )
 
-var (
-    listen  chan message.Message
-    respond chan message.Message
-)
+type Razwork struct{}
 
-func Register(listener, responder chan message.Message) {
-    listen = listener
-    respond = responder
-}
+func (r *Razwork) Respond(msg *message.Message) *message.Message {
+    m := message.Empty()
+    msglc := strings.ToLower(msg.Message)
+    nicklc := strings.ToLower(msg.Sender)
 
-func Start() {
-    for {
-        select {
-        case msg := <-listen:
-            msglc := strings.ToLower(msg.Message)
-            nicklc := strings.ToLower(msg.Sender)
-            if (strings.Contains(nicklc, "raziel")) {
-                if (strings.Contains(msglc, "work")) {
-                    respond <- *message.Response(msg.Channel, "why are you not at work?")
-                } else if (strings.Contains(msglc, "home")) {
-                    respond <- *message.Response(msg.Channel, "how was work? :)")
-                }
-            }
+    if strings.Contains(nicklc, "raziel") {
+        if strings.Contains(msglc, "work") {
+            m = message.Response(msg.Channel, "why are you not at work?")
+        } else if strings.Contains(msglc, "home") {
+            m = message.Response(msg.Channel, "how was work? :)")
         }
     }
+
+    return m
 }

@@ -13,12 +13,13 @@ import (
     "github.com/moopie/gobot/modules/hello"
     "github.com/moopie/gobot/modules/pms"
     "github.com/moopie/gobot/modules/razwork"
+    "github.com/moopie/gobot/modules/grnaer"
 )
 
 var (
     server = flag.String("server", "irc.quakenet.org", "Location of the server")
     port = flag.Int("port", 6667, "Port of the server")
-    nick = flag.String("nick", "Archer", "Which nick to use")
+    Nick = flag.String("nick", "Archer", "Which nick to use")
     user = flag.String("user", "gobot", "Username")
     name = flag.String("name", "gobot", "Ident")
     pass = flag.String("pass", "", "Server password, not nickserv")
@@ -44,6 +45,7 @@ func main() {
     register(new(hello.Hello))
     register(new(pms.Pms))
     register(new(razwork.Razwork))
+    register(new(grnaer.Grnaer))
 
     // No port yet, TODO: find out how to append an int to a string (yes, really)
     if err := connection.Connect(*server); err != nil {

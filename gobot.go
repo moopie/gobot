@@ -22,7 +22,7 @@ var (
     user = flag.String("user", "gobot", "Username")
     name = flag.String("name", "gobot", "Ident")
     pass = flag.String("pass", "", "Server password, not nickserv")
-    chans = flag.String("channels", "#redditeu", "Join channels on connect")
+    chans = flag.String("join", "#redditeu", "Join channels on connect")
     connection = new(irc.Conn)
     subscribers = make([]module.Module, 0, 10)
 )
@@ -71,14 +71,15 @@ func recieve(conn *irc.Conn, line *irc.Line) {
         if(response.Message != "") {
             // When channel is nick, this means it was a private message
             // so send the message to the sender instead
+            // Send it to the full raw nick+hostmask name
             if (response.Channel == *nick) {
-                response.Channel = response.Sender
+                response.Channel = line.Src
             }
             conn.Privmsg(response.Channel, response.Message)
         }
     }
 
-    fmt.Println("["+line.Args[0]+"]"+ line.Nick+":"+  line.Args[1])
+    fmt.Println("["+line.Args[0]+"] "+line.Nick+": "+line.Args[1])
 }
 
 // Said heroku hack in action

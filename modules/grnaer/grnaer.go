@@ -1,4 +1,4 @@
-package pms
+package grnaer
 
 import (
     "github.com/moopie/gobot/message"

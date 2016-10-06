@@ -38,6 +38,7 @@ func Connect(nick, user, name, server string, port int, join []string) {
     register(grnaer.Create(Nick))
 
     // No port yet, TODO: find out how to append an int to a string (yes, really)
+    // P.S. Gtfo franky
     if err := ircClient.Connect(server); err != nil {
         fmt.Println("conn error: %s", err.Error())
     }
